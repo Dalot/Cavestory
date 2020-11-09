@@ -21,13 +21,14 @@ void Game::gameLoop() {
 	Graphics graphics;
 	SDL_Event event;
 	Input input;
-	_player = Sprite(graphics, "content/sprites/MyChar.png", 0, 0, 15, 15, 100, 100);
+	_player = AnimatedSprite(graphics, "content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100, 100);
+	_player.setupAnimations();
+	_player.playAnimation("RunLeft");
 
 	int LAST_UPDATE_TIME = SDL_GetTicks();
 
-
-
 	while (true) {
+		// clear input from keys on a new frame
 		input.beginNewFrame();
 
 		if (SDL_PollEvent(&event)) {
@@ -37,7 +38,9 @@ void Game::gameLoop() {
 				}
 			}
 			else if (event.type == SDL_KEYUP) {
-				input.keyUpEvent(event);
+				if (event.key.repeat == 0) {
+					input.keyUpEvent(event);
+				}
 			}
 			else if (event.type == SDL_QUIT) {
 				return;
@@ -66,5 +69,5 @@ void Game::draw(Graphics &graphics) {
 }
 
 void Game::update(float elapsedTime) {
-
+	_player.update(elapsedTime);
 }
